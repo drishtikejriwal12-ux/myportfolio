@@ -301,9 +301,7 @@ dialog.wide{width:min(980px,calc(100vw - 24px))}
 .loot{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:26px 14px;margin-top:0}
 .loot{display:none}
 .treasure.opened .loot{display:grid;margin-top:clamp(28px,5vw,54px)}
-.clues{margin-top:14px;margin-bottom:0;display:flex;align-items:center;justify-content:center;pointer-events:none;transition:opacity .4s}
-.clues span{font:500 .8rem var(--mono);letter-spacing:.08em;color:var(--tmut);border:1.5px dashed var(--tmut);border-radius:999px;padding:9px 18px;opacity:.85}
-.treasure.opened .clues{display:none}
+
 .coin{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;background:none;border:0;padding:0;color:inherit;cursor:pointer;perspective:700px;visibility:hidden;-webkit-tap-highlight-color:transparent}
 .coin.show{visibility:visible}
 .coin-in{position:relative;width:clamp(68px,9vw,92px);aspect-ratio:1;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.3,1.3,.5,1);filter:drop-shadow(0 6px 6px rgba(80,40,0,.3)) drop-shadow(0 0 var(--coinglow) rgba(255,214,110,.6))}
@@ -332,6 +330,18 @@ dialog.wide{width:min(980px,calc(100vw - 24px))}
 .pe{color:rgba(255,255,255,.85)}
 .play h2{font:400 clamp(2rem,5vw,3.4rem)/1.06 var(--display);margin:.3em 0 .2em;color:#fff;text-shadow:0 2px 14px rgba(0,40,60,.25)}
 .psub{margin:0 auto;max-width:44ch;color:rgba(255,255,255,.92)}
+.ovbtns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.tbtn.ghost{background:rgba(255,255,255,.2);color:#fff;box-shadow:inset 0 0 0 2px rgba(255,255,255,.7)}
+.reward{display:flex;align-items:center;gap:16px;margin:18px auto 0;max-width:640px;text-align:left;padding:14px 18px;border-radius:20px;background:rgba(255,255,255,.14);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.4);color:#fff;transition:background .4s,box-shadow .4s}
+.rico{flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.2)}
+.rico svg{width:26px;height:26px}.rtick{opacity:0}
+.rtxt{flex:1;min-width:0;display:grid;gap:3px}.rtxt b{font:600 1.02rem var(--body)}.rtxt span{font-size:.88rem;color:rgba(255,255,255,.9)}
+.rbar{height:7px;border-radius:99px;background:rgba(255,255,255,.25);overflow:hidden;margin-top:6px}
+.rbar i{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,#ffd166,#ff9d3d);transition:width .35s}
+.reward[data-state="open"]{background:rgba(255,209,102,.28);box-shadow:inset 0 0 0 2px #ffd166}
+.reward[data-state="open"] .rico{background:#ffd166;color:#5a3a08}.reward[data-state="open"] .rlockg{display:none}.reward[data-state="open"] .rtick{opacity:1}
+.reward[data-state="open"] .rbar{display:none}
+.reward .tbtn{padding:10px 20px;font-size:.95rem}
 .arena{position:relative;margin-top:clamp(20px,4vw,40px);border-radius:26px;overflow:hidden;box-shadow:0 24px 60px rgba(0,30,50,.35),0 0 0 6px rgba(255,255,255,.35);aspect-ratio:5/3;max-width:100%;touch-action:pan-y;background:#bfe9f2}
 .arena canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y}
 .hud{position:absolute;left:0;right:0;top:0;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 16px;font:600 .85rem var(--mono);color:#fff;pointer-events:none;text-shadow:0 1px 6px rgba(0,30,50,.5)}
@@ -793,7 +803,6 @@ dialog.wide{width:min(980px,calc(100vw - 24px))}
     <div class="tcontrol"><button class="tbtn" id="tbtn" type="button">Open the chest</button></div>
 
     <div class="loot" id="loot"></div>
-    <div class="clues" id="clues" aria-hidden="true"><span>Tap the chest to find the loot</span></div>
   </div>
 </section>
 
@@ -809,11 +818,17 @@ dialog.wide{width:min(980px,calc(100vw - 24px))}
       <div class="ov" id="gov">
         <div class="ovc">
           <h3 id="govt">Ready?</h3>
-          <p id="govp">Slide or drag to move the crab. Arrow keys or A / D work too.</p>
+          <p id="govp">Catch 15 points to unlock a special reward. Slide or drag to move the crab, or use the arrow keys.</p>
           <ul class="legend"><li><i class="k shell"></i>Shell +1</li><li><i class="k star"></i>Starfish +3</li><li><i class="k pearl"></i>Pearl +5</li><li><i class="k nut"></i>Coconut, ouch</li></ul>
-          <button class="tbtn" id="gstart" type="button">Play</button>
+          <div class="ovbtns"><button class="tbtn" id="gstart" type="button">Play</button><button class="tbtn ghost" id="grew" type="button" hidden>Open your reward</button></div>
         </div>
       </div>
+    </div>
+    <div class="reward" id="reward" data-state="locked">
+      <span class="rico" aria-hidden="true"><svg viewBox="0 0 48 48"><g class="rlockg"><rect x="11" y="21" width="26" height="20" rx="5" fill="currentColor"/><path d="M17 21v-5a7 7 0 0 1 14 0v5" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></g><path class="rtick" d="M13 25l8 8 14-16" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <div class="rtxt"><b id="rt">A special reward</b><span id="rs">Catch 15 points in Crab Catch to unlock it.</span>
+        <div class="rbar" aria-hidden="true"><i id="rbar"></i></div></div>
+      <button class="tbtn" id="ropen" type="button" hidden>Open</button>
     </div>
   </div>
 </section>
@@ -885,6 +900,7 @@ syncTheme();
 
 /* ---------------- boats (edit these) ---------------- */
 var IMG={};
+var CHECKLIST={kind:'Your reward',title:'Product design checklist',lead:'A free checklist to run before you ship. Thanks for playing.',pages:'case-studies/checklist/',count:3,pdf:'case-studies/product-design-checklist.pdf'};
 var BOATS=[
   {art:'b-sail',x:3.2, z:17,len:3.7,top:112,n:'01',name:'Crewnox site',kind:'Shipped project \u00b7 Case study',title:'Crewnox website',lead:"Every studio sells someone else's story. This time, we had to tell our own.",pages:'case-studies/crewnox/',count:9,pdf:'case-studies/crewnox-website-case-study.pdf'},
   {art:'b-fish',x:-8.6,z:14,len:3.3,top:70, n:'02',name:'Gatehouse',kind:'UX case study',title:'The Gatehouse Experience',lead:'Zero-friction visitor verification for Indian residential housing societies.',pages:'case-studies/gatehouse/',count:4,pdf:'case-studies/gatehouse-ux-case-study.pdf'},
@@ -906,7 +922,7 @@ BOATS.forEach(function(b,i){
 /* ---------------- project sheet ---------------- */
 var dlg=$('#dlg'),lastFocus=null;
 function openProject(i){
-  var b=BOATS[i];lastFocus=document.activeElement;pdfJob++;
+  var b=(typeof i==='object')?i:BOATS[i];lastFocus=document.activeElement;pdfJob++;
   dlg.classList.toggle('wide',!!b.pdf);$('#dpdf').hidden=!b.pdf;$('#dpdfbar').hidden=!b.pdf;$('#dpdf').textContent='';
   $('#dk').textContent=b.kind;$('#dt').textContent=b.title||('Project '+b.n);$('#dp').textContent=b.lead||'';
   var cv=$('#dcov');if(b.cover){cv.src=IMG[b.cover];cv.alt=b.title+' cover';cv.hidden=false}else{cv.hidden=true;cv.removeAttribute('src')}
@@ -925,6 +941,7 @@ function openProject(i){
 var pdfJob=0;
 function renderPdf(b,job){
   var box=$('#dpdf');box.textContent='';
+  if(!b.count){var d=document.createElement('div');d.className='dmsg';d.textContent='The checklist is being added. Check back soon.';box.appendChild(d);$('#dpdfbar').hidden=true;return}
   for(var k=1;k<=b.count;k++){
     var im=document.createElement('img');im.src=b.pages+k+'.jpg';im.alt=k===1?(b.title+' case study, page 1 of '+b.count+' sections'):'';im.decoding='async';
     if(k>2)im.loading='lazy';
@@ -1529,8 +1546,23 @@ var TOOLS=[
       else{o.type='sine';o.frequency.setValueAtTime(150,n);o.frequency.exponentialRampToValueAtTime(50,n+.22);g.gain.setValueAtTime(.0001,n);g.gain.exponentialRampToValueAtTime(.25,n+.01);g.gain.exponentialRampToValueAtTime(.0001,n+.3)}
       o.connect(g);g.connect(master);o.start(n);o.stop(n+.6)}catch(err){}
   }
-  function reset(){score=0;lives=3;items=[];t=0;spawn=0;popups=[];hs.textContent='0';setLives();crab.x=crab.tx=W/2}
-  function start(){reset();st='play';ov.classList.add('hide');last=0;loop()}
+  var GOAL=15,unlocked=false;try{unlocked=localStorage.getItem('crabUnlocked')==='1'}catch(err){}
+  var rew=$('#reward'),rbar=$('#rbar'),ropen=$('#ropen'),grew=$('#grew');
+  function showReward(){
+    rew.dataset.state=unlocked?'open':'locked';ropen.hidden=!unlocked;grew.hidden=!unlocked;
+    $('#rs').textContent=unlocked?'Unlocked. Tap Open to see it.':'Catch '+GOAL+' points in Crab Catch to unlock it.';
+    rbar.style.width=(unlocked?100:Math.min(100,score/GOAL*100))+'%';
+  }
+  function win(){
+    unlocked=true;try{localStorage.setItem('crabUnlocked','1')}catch(err){}
+    st='won';showReward();sfx('big');
+    $('#govt').textContent='Reward unlocked!';$('#govp').textContent='You caught '+GOAL+' points. Your special reward is ready to open.';
+    btn.textContent='Keep playing';ov.classList.remove('hide');
+  }
+  function openReward(){openProject(CHECKLIST)}
+  ropen.addEventListener('click',openReward);grew.addEventListener('click',openReward);
+  function reset(){score=0;lives=3;items=[];t=0;spawn=0;popups=[];hs.textContent='0';setLives();crab.x=crab.tx=W/2;showReward()}
+  function start(){if(st==='won'){st='play';ov.classList.add('hide');last=0;loop();return}reset();st='play';ov.classList.add('hide');last=0;loop()}
   function over(){
     st='over';if(score>best){best=score;try{localStorage.setItem('crabBest',best)}catch(err){}hb.textContent=best}
     $('#govt').textContent=score>=best&&score>0?'New best: '+score+'!':'Tide\u2019s out: '+score;
@@ -1554,7 +1586,7 @@ var TOOLS=[
       if(it.y>gy-30&&it.y<gy+10&&Math.abs(it.x-crab.x)<58){
         items.splice(i,1);
         if(it.k==='nut'){lives--;crab.hit=.6;setLives();sfx('nut');popups.push({x:crab.x,y:gy-50,t:0,s:'ouch',c:'#ff6b5a'});if(lives<=0){over();return}}
-        else{var pts=it.k==='pearl'?5:it.k==='star'?3:1;score+=pts;hs.textContent=score;sfx(pts>1?'big':'coin');popups.push({x:it.x,y:gy-50,t:0,s:'+'+pts,c:'#fff'})}
+        else{var pts=it.k==='pearl'?5:it.k==='star'?3:1;score+=pts;hs.textContent=score;if(!unlocked)rbar.style.width=Math.min(100,score/GOAL*100)+'%';sfx(pts>1?'big':'coin');popups.push({x:it.x,y:gy-50,t:0,s:'+'+pts,c:'#fff'});if(score>=GOAL&&!unlocked){win();return}}
       }else if(it.y>H+30){items.splice(i,1)}
     }
     for(var j=popups.length-1;j>=0;j--){popups[j].t+=dt;if(popups[j].t>.8)popups.splice(j,1)}
@@ -1640,9 +1672,9 @@ var TOOLS=[
   });
   window.addEventListener('keyup',function(ev){var k=ev.key;if(k==='ArrowLeft'||k==='a'||k==='A')keys.l=0;if(k==='ArrowRight'||k==='d'||k==='D')keys.r=0});
   btn.addEventListener('click',start);
-  size();setLives();loop();
+  size();setLives();showReward();if(unlocked){$('#govp').textContent='Your reward is already unlocked. Play again for fun, or open it now.'}loop();
   window.addEventListener('resize',function(){size();draw()});
-  window.crabcatch={start:start,state:function(){return {st:st,score:score,lives:lives}},setX:function(x){crab.tx=x;crab.x=x}};
+  window.crabcatch={items:function(){return items},start:start,state:function(){return {st:st,score:score,lives:lives}},setX:function(x){crab.tx=x;crab.x=x}};
 })();
 
 /* ---------------- contact ---------------- */
